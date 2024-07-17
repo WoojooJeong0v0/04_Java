@@ -258,9 +258,9 @@ public class ConditionEx {
 	 * 
 	 * 
 	 * 3) PASS인 경우
-	 * PASS [점수 : 83.4 / 100]
+	 * PASS [점수 : 83.4 / 100] */
 	 
-	public void practice() {
+		public void practice() {
 		System.out.print("점수 입력(국 영 수 사 과) : ");
 		
 		int kor = sc.nextInt(); // 국
@@ -269,11 +269,53 @@ public class ConditionEx {
 		int soc = sc.nextInt(); // 사
  		int sci = sc.nextInt(); // 과
  		
-// 		System.out.println(kor);
-// 		System.out.println(eng);
-// 		System.out.println(mat);
-// 		System.out.println(soc);
-// 		System.out.println(sci);
+ 		// 40점 미만인 과목 검사
+ 		boolean flag = false;
+ 		String str = ""; // 빈칸(자료형은 String, 내용은 없음) 
  		
-	}*/
-}
+ 		if(kor < 40) {
+ 			flag = true;
+ 			str += "국어 "; }
+ 			
+ 		
+ 		if(eng < 40) {
+ 			flag = true;
+ 			str += "영어 "; }
+ 			
+
+		if(mat < 40) {
+			flag = true;
+			str += "수학 "; }
+			
+			
+	 	if(soc < 40) {
+	 		flag = true;
+	 		str += "사회 "; }
+	 		
+	 		
+	 	if(sci < 40) {
+	 		flag = true;
+	 		str += "과학 "; }
+	 		
+		
+		// 40점 미만 과목이 존재하는 경우
+		if(flag) {
+			System.out.printf("FAIL [ 40점 미만 과목 : %s]", str);
+			return;
+		}
+ 		
+ 		
+ 		// double 형 결과를 반환 받기 위해 강제 형변환, 5.0으로 나누다 
+		double avg = (kor + eng + mat + soc + sci) / 5.0;
+		
+		if(avg < 60.0){
+			System.out.printf("FAIL [점수 : %.1f (평균미달)]", avg);
+			return; // Early return; (중간에 메서드를 종료)
+		}
+		
+			System.out.printf("PASS [점수 : %.1f / 100]", avg);
+			
+		}
+		
+		
+	}
