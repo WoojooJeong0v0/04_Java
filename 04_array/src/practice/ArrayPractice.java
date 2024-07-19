@@ -253,12 +253,12 @@ public class ArrayPractice {
 		// 입력한 정수가 홀수가 아니거나 3미만일 때 "다시 입력하세요" 후
 		// 정수를 다시 받도록 함
 		
-		
+//		while(true) {
 //		System.out.print("3 이상 홀수 입력 : ");
 //		int num = sc.nextInt();
 //		
 //		if(num < 3 || num % 2 == 0) {
-//			while(true) {
+//			
 //				System.out.println("다시 입력하세요.");
 //				continue;
 //			} 
