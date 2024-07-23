@@ -42,9 +42,9 @@ public class StudentView {
 			case 2 : allStudent(); break;
 			case 3 : selectIndex(); break;
 			case 4 : selectName(); break;
-			case 5 : break;
-			case 6 : break;
-			case 7 : break;
+			case 5 : updateIndex(); break;
+			case 6 : selectScore(); break;
+			case 7 : selectMaxMin(); break;
 			case 0 : System.out.println("***프로그램 종료***");  break; 
 			default: System.out.println("***메뉴 번호 잘못 입력***");
 			}
@@ -153,6 +153,157 @@ public class StudentView {
 		}
 		
 		System.out.println(std.toString());
+	}
+	
+	
+	/**
+	 * 인덱스 번호를 입력 받아 일치하는 학생의
+	 * html, css, js, java 점수를 수정
+	 * 
+	 * 단, 입력된 인덱스가 0미만, students 배열 마지막 인덱스 초과한 경우
+	 * "인덱스 범위가 올바르지 않습니다" 출력 (1)
+	 * 
+	 * 정상 범위 인덱스이지만 학생이 존재하지 않는 경우
+	 * "해당 인덱스에 학생 정보가 존재하지 않습니다" 출력 (2)
+	 * 
+	 * (3) 정상
+	 */ 
+	private void updateIndex() {
+		System.out.println("\n----학생 점수 수정----\n");
+		
+		System.out.print("수정할 학생 인덱스 번호 입력 : ");
+		int index = sc.nextInt();
+		
+		// 입력 받은 index가 정상인지 판별하자 
+		// 1 == 범위 초과
+		// 2 == 학생 없음
+		// 3 == 정상
+		int check = service.checkIndex(index);
+		
+		if(check == 1) {
+			System.out.println("인덱스 범위가 올바르지 않습니다");
+			return;
+		}
+		
+		if(check == 2) {
+			System.out.println("해당 인덱스에 학생 정보가 존재하지 않습니다");
+			return;
+		}
+		
+		// 학생이 존재하는 경우 점수 입력 받아서 수정
+		// HTML, CSS, JS, Java 순서로 점수 입력 : 100 40 60 70
+		System.out.print("HTML, CSS, JS, Java 순서로 점수 입력 : ");
+		int html = sc.nextInt();
+		int css = sc.nextInt();
+		int js = sc.nextInt();
+		int java = sc.nextInt();
+		
+		// 매개변수는 5개 미만을 추천함!
+		// 점수만 담는 용도의 StudentDTO 객체를 생성		
+		StudentDTO scores = new StudentDTO(html, css, js, java);
+		
+		// 점수 수정 서비스 메서드 호출
+		// -> 절대로 실패할 일이 없기 때문에 반환값 없음
+		service.updateScores(index, scores); // 반환형 x
+		
+		System.out.println("***점수 수정 완료***");
+		
+	}
+	
+	/**
+	 * 입력 받은index번째 학생의 점수, 합계, 평균 출력
+	 * 단, 정상 index인지 확인할 것!
+	 * 
+	 * 예 ) 인덱스 입력 : 0 
+	 * -------------------------------------
+	 * 이름 : 짱구
+	 * HTML (80) CSS (70) JS (50) Java (90)
+	 * 합계 : 290
+	 * 평균 : 72.5
+	 * -------------------------------------
+	 */
+	private void selectScore() {
+		System.out.println("\n----학생 점수 조회----\n");
+		System.out.print("인덱스 입력 : ");
+		int index = sc.nextInt();
+		
+		int check = service.checkIndex(index);
+		
+		if(check == 1) {
+			System.out.println("인덱스 범위가 올바르지 않습니다");
+			return;
+		}
+		
+		if(check == 2) {
+			System.out.println("해당 인덱스에 학생 정보가 존재하지 않습니다");
+			return;
+		}
+		
+		// 인덱스번째 학생 조회
+		StudentDTO std = service.selectIndex(index);
+		
+		System.out.println("------------------");
+		System.out.println("이름 : " + std.getName());
+		System.out.printf("HTML (%d) CSS (%d) JS (%d) Java (%d) \n", std.getHtml(), std.getCss(), std.getJs(), std.getJava());
+		
+		// 합계
+		int sum = std.getHtml() + std.getCss() + std.getJs() + std.getJava();
+				
+		System.out.printf("합계 : %d\n", sum);
+		
+		//평균
+		double avg = sum / 4.0;
+		System.out.println("평균 : " + avg);
+		
+		System.out.println("------------------");
+	}
+	
+	
+	/**
+	 * 평균 최고점, 최저점 조회하기
+	 * 
+	 * 최고점 : 짱구 (85.4)
+	 * 최저점 : 맹구 (61.5)
+	 */
+	
+	private void selectMaxMin() {
+		System.out.println("\n----평균 최고/최저점 조회하기----\n");
+		
+		//String result = service.selectMaxMin(); 로 반환되는 문자열 형태가
+		// 	 * 최고점 : 짱구 (85.4)
+		//	 * 최저점 : 맹구 (61.5)
+		String result = service.selectMaxMin();
+		
+		System.out.println(result);
+		
+	}
+	
+	
+	
+	
+	private void testMaxMin() {
+		
+		// 테스트 코드
+		int[] arr = {50, 30, 10, 70, 40};
+		
+		int max = 0; // 최대값 저장할 변수
+		int min = 0; // 최소값 저장할 변수
+		
+		for(int i = 0 ; i < arr.length ; i++) {
+			if (i == 0) { // 맨 처음 반복
+				max = arr[i];
+				min = arr[i];
+				continue; // for문이 더 실행되지 않게 된다
+			}
+			
+			// 최대값 비교 
+			if(arr[i] > max) max = arr[i]; // 네가 새로운 최대 값이다!! max에 새 최대값 대입
+			// 최소값 비교
+			if(arr[i] < min) min = arr[i]; // 네가 새로운 최소 값이다!! min에 새 최소값 대입
+		}
+		System.out.println("max : " + max);
+		System.out.println("min : " + min);
+				
 	}
 	
 }

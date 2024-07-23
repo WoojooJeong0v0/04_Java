@@ -115,6 +115,102 @@ public class StudentService {
 		}
 		return null;
 	}
+
+	
+	/**
+	 * 전달 받은 index가 students 범위 내인지
+	 * + 정상 범위라면 해당 index가 학생 객체를 참조하는지 확인
+	 * @param index
+	 * @return 1 또는 2 (3은 정상)
+	 */
+	
+	public int checkIndex(int index) {
+		// 입력 받은 index가 정상인지 판별하자 
+		// 1 == 범위 초과
+		// 2 == 학생 없음
+		// 3 == 정상
+		
+		// index는 무조건 0부터 시작하기 때문에
+		if(index < 0 || index >= students.length) return 1;
+		
+		if(students[index] == null) return 2;
+		
+		return 3;
+	}
+
+	
+	/**
+	 * 전달 받은 index 번째 학생의 점수 수정하기
+	 * @param index
+	 * @param scores
+	 */
+	public void updateScores(int index, StudentDTO other) {
+		
+		// 객체 배열 : 객체 참조형 변수(주소)를 묶음으로 다룸
+		StudentDTO s = students[index]; // students 학생정보 객체 배열의 참조형 변수 
+		// 주소를 변수에 대입하는 것으로 얕은 복사가 일어남!!
+		// students[index]번째에 저장된 주소 얕은 복사
+		
+		// 전달하는 이름과 전달 받은 곳에서 쓰이는 이름이 같을 필요 없음!
+		// scores -> other 로 작성
+		// other에서 값을 get해서 s에 set를 해줘!
+		s.setHtml(other.getHtml());
+		s.setCss(other.getCss());
+		s.setJs(other.getJs());
+		s.setJava(other.getJava());
+		
+		// return; 안 써도 컴파일러가 자동으로 추가 
+	}
+
+	
+	/**
+	 * 평균 최대/최소 구하기
+	 * @return 	
+		// 	 * 최고점 : 짱구 (85.4)
+		//	 * 최저점 : 맹구 (61.5)
+	 */
+	public String selectMaxMin() {
+		
+		double maxAvg = 0.0; // 최대값 저장할 변수
+		double minAvg = 0.0; // 최소값 저장할 변수
+		String maxName = null;
+		String minName = null;
+		
+		// 최고/최점 판별
+		for(StudentDTO std : students) {
+			
+			if(std == null) break; // 학생이 없으면 반복을 멈추겠다
+			
+			int sum = std.getHtml() + std.getCss() + std.getJava() + std.getJs();
+			
+			double avg = sum / 4.0;
+		
+			// for 첫 반복일 때, 아무 값도 대입하지 않았을 때
+			if (maxAvg == 0.0) {
+				maxAvg = avg;
+				maxName = std.getName();
+				
+				minAvg = avg;
+				minName = std.getName();
+				continue;
+			}
+			
+			
+			if (avg > maxAvg) { // 기존 최대값보다 현재 평균이 클 때
+				maxAvg = avg;
+				maxName = std.getName();
+			}
+			
+			if (avg < minAvg) { // 기존 최소값보다 현재 평균이 작을 때
+				minAvg = avg;
+				minName = std.getName();
+			}
+		}
+		
+		
+		String result = String.format("최고점 : %s(%.1f)\n최저점 : %s(%.1f)\n", maxName, maxAvg, minName, minAvg);
+		return result;
+	}
 	
 	
 }
