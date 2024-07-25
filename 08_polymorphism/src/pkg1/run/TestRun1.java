@@ -92,7 +92,7 @@ public class TestRun1 {
 		 * 
 		 **** 주의사항
 		 *- instanceof는 참조하고 있는 객체의 상속 관계까지 파악한다
-		 *
+		 * 
 		 *- 상속하고 있는 객체도 확인하기 때문에 자식객체를 참조하는 변수에 
 		 *	부모 타입을 검사하면 true가 나온다
 		 *
@@ -114,7 +114,7 @@ public class TestRun1 {
 			 * 마지막 자식의 자료형부터 검사하는 것을 추천!! */
 			
 			// 얻어 온 요소가 Child 타입이면
-			if(obj instanceof Child) {
+			if(obj instanceof Child) { // obj가 참조하고 있는 게 Child타입이야??
 				System.out.println("Child입니다");
 			}
 			
