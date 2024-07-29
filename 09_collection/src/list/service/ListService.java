@@ -1,7 +1,9 @@
 package list.service;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Collection == Framework
@@ -162,4 +164,56 @@ public class ListService {
 		System.out.println(menuList);
 	
 	}
+	
+	/**
+	 * 왜 컬렉션 참조 변수를 부모 타입으로 작성 하는가?
+	 * 
+	 * 다형성 업캐스팅의 특징을 이용,
+	 * 프로그래밍 과정에서 미처 생각지 못한 비효율적인 요소를
+	 * 쉽게 개선하기 위해서 
+	 * 
+	 * 	예 ) ArrayList로 만들었는데 중간에 추가 삭제가 빈번히 일어나는 경우
+	 * 		-> LinkedList가 훨씬 효율적이다!!
+	 * 
+	 * 		LinkedList로 만들었는데 검색이 빈번하게 일어나는 경우
+	 * 		-> ArrayList 가 훨씬 효율적!!
+	 */
+	public void test3() {
+//		List<Integer> list = new ArrayList<Integer>();
+		List<Integer> list = new LinkedList<Integer>();
+		Random random = new Random();
+		
+//		System.currentTimeMillis()
+		// -> 1970년 1월 1일 09:00.00 0초 기준으로
+		// 현재 시간까지 지난 시간을 ms로 반환(long타입)
+//		System.out.println(System.currentTimeMillis());
+//		System.out.println(System.nanoTime());
+		long start = System.currentTimeMillis(); // for문 전에 시간 저장
+		
+		
+		for(int i = 0 ; i < 500000 ; i++) { // 100만바퀴
+			list.add(random.nextInt(100000)); // 0 ~ 99999 사이 난수
+//			System.out.println(list.get(i));
+		}
+		
+		long end = System.currentTimeMillis();
+		
+		System.out.println("생성 완료 - 걸린 시간 : "  + (end-start) + "ms");
+//		System.out.println(System.currentTimeMillis());
+		
+		// 추가 시간 확인
+		start = System.nanoTime();
+		list.add(500000, 123456789); // 중간에 데이터 삽입 // 데이터가 백만 1개가 됨
+		end = System.nanoTime();
+		System.out.println("추가 시간 : " + (end-start) + "nm");
+		
+		// 검색 시간 확인
+		start = System.currentTimeMillis();
+		System.out.println(list.indexOf(123456789));
+		end = System.currentTimeMillis();
+		System.out.println("검색 시간 : " + (end-start) + "ms");
+	}
+	
+	// ArrayList 는 생성이 빠르고 검색도 빠름!
+	// LinkedList는 추가 생성 삭제가 빨라진다!!
 }
