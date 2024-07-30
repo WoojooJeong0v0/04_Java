@@ -10,8 +10,7 @@ public class PokeView {
 	 	 */
 	
 	public void mainMenu() {
-		int input = 0;
-		
+		int menu = 0;
 		do {
 			System.out.println("1. 이름 짓기");
 			System.out.println("2. 내 포켓몬 상태 보기");
@@ -20,10 +19,11 @@ public class PokeView {
 			System.out.println("0. 게임 종료");
 			
 			System.out.print("무얼 하시겠습니까? ");
-			int menu = sc.nextInt();
+			System.out.println();
+			menu = sc.nextInt();
 			sc.nextLine();
 			
-			switch(input){
+			switch(menu){
 			case 1 : namming(); break;
 			case 2 : break;
 			case 3 : break;
@@ -32,14 +32,14 @@ public class PokeView {
 			default : System.out.println("잘못 입력하셨습니다.");
 			}
 			
-		}while(input != 0);
+		}while(menu != 0);
 	}
 	
 	public void namming() {
 		System.out.print("이름을 지어주세요 : ");
 		String myPoketmon = sc.nextLine();
 		System.out.println("내 포켓몬 이름은 " + myPoketmon + "입니다!");
-		System.out.println("만나서 반가워요!");
+		System.out.println("만나서 반가워요!\n");
 	}
 
 }
