@@ -2,6 +2,7 @@ package service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import dao.MemberDao;
@@ -27,6 +28,8 @@ public class MemberServiceImpl implements MemberService {
 	
 	// dao 객체 부모 참조변수 선언
 	private MemberDao dao = null;
+	
+	private String[] gradeArr = {"일반", "골드", "다이아"};
 	
 	// 기본 생성자
 	// - MemberServiceImpl 객체 생성 시
@@ -71,8 +74,111 @@ public class MemberServiceImpl implements MemberService {
 		
 	
 	
+		// 이름 검색
+		
+		@Override
+		public List<Member> selectName(String searchName) { // 서비스에서 미리 선언해야 함 (그다음 임플로)
+			
+			// DAO를 이용해 회원 전체 목록 조회
+			List<Member> memberList = dao.getMemberList();	// Dao에 있는 멤버리스트 필드를 그대로 줌	
+			
+			// memberList에 저장된 요소(회원) 중
+			// 이름이 같은 회원 찾아서 검색결과를 저장할 별도 List에 추가
+			// 별도리스트부터 만들어야 함
+			List<Member> searchList = new ArrayList<Member>();
+			//                   전체 회원 목록에서 한 명씩 꺼내기
+			for(Member member : memberList) {
+				if(member.getName().equals(searchName)) { // 메서드 체이닝 : 멤버 한 명 이름 꺼내서 받아온 서치네임과 비교해봄
+					searchList.add(member); // 비교한 멤버를 별도로 만든 리스트에 저장해라
+				}
+			}
+			
+			return searchList; // 검색 결과 반환
+		}
+
+		
+		// 금액누적
+		@Override
+		public String updateAmount(Member target, int acc) throws IOException {
+			
+			// 이전 금액 백업 -> 출력할 문자열 만들 때 사용
+			int before = target.getAmount(); 
+			
+			// 대상 회원의 금액 누적하기
+			target.setAmount(before + acc);
+			
+			// 등급 판별
+//			  일반   : 0 ~ 100,000 미만
+//			  골드   : 100,000 이상 ~ 1,000,000 미만
+//			  다이아 : 1,000,000 이상
+			
+				// curren에 저장	// 현재 대상이 가지고 있는 금액을
+			int currentAmount = target.getAmount();
+			int grade = 0; // 판별된 등급을 저장
+			
+			if(currentAmount < 100000) 		 grade = Member.COMMON;
+			else if(currentAmount < 1000000) grade = Member.GOLD;
+			else 							 grade = Member.DIAMOND;
+ 			
+			StringBuilder sb = new StringBuilder(); // 문자열을 계속 조립해나갈 예정
+			sb.append(target.getName());
+			sb.append(" 회원님의 누적 금액\n");
+			sb.append(before + " -> " + currentAmount);
+			// 이전 회원의 등급과 새로 판별된 등급이 다른 경우
+			if (target.getGrade() != grade) {
+				String str = String.format("\n * %s * 등급으로 변경 되셨습니다\n", gradeArr[grade]);
+				sb.append(str);
+				
+				// 대상 회원 데이터에 등급을 판별된 등급(grade)으로 변경
+				target.setGrade(grade);
+			}
+			
+			// 변경된 데이터를 저장하는 DAO 메서드 호출이 필요함!!
+			dao.saveFile();
+			
+			return sb.toString();
+		}
+
+	
+		@Override
+		public String updateMember(Member target, String editPhon) throws IOException {
+			
+			// 이전 번호 저장
+			String before = target.getPhone();
+			
+			// 대상의 전화번호를 입력받은 새 번호로 변경
+			target.setPhone(editPhon);
+			
+			// 출력 문자열 만들기
+			StringBuilder sb = new StringBuilder();
+			
+			sb.append(target.getName());
+			sb.append("님의 전화번호가 변경 되었습니다\n");
+			sb.append(before + "->" + editPhon);
+			
+			dao.saveFile();
+			
+			return sb.toString(); // 결과 문자열 반환
+		}
 	
 	
-	
+		@Override
+		public String deleteMember(Member target) throws IOException {
+			
+			// 회원 목록을 얻어오기
+			List<Member> memberList = dao.getMemberList();
+			
+			// 회원 목록에서 target 제거하기
+			// List.remove(Object obj) 결과 boolean 반환
+			// -> List에 저장된 요소 중 obj와 같은 요소 제거
+			// --> ***조건 : 요소 객체가 equals()오버라이딩 되어야 있어야 함
+			boolean result = memberList.remove(target);
+			
+//			StringBuilder sb = new StringBuilder();
+			
+			dao.saveFile(); // 탈퇴 데이터 세이브
+			
+			return target.getName() + "회원이 탈퇴처리 되었습니다";
+		}
 	
 }
